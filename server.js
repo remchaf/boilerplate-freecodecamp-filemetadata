@@ -1,12 +1,14 @@
 var express = require('express');
 var cors = require('cors');
-require('dotenv').config()
+require('dotenv').config();
+const multer = require('multer');
+const { env } = require('./.env')
 
 // Mongoose
 require('mongodb');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 var app = express();
@@ -18,6 +20,13 @@ app.get('/', function (req, res) {
     res.sendFile(process.cwd() + '/views/index.html');
 });
 
+app.post( '/api/fileanalyse', multer({}).single('upfile'), (req, res) => {
+  res.json( {
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size
+  })
+} )
 
 
 
